@@ -27,4 +27,23 @@ if (defined('WB_PATH')) {
 }
 // end include LEPTON class.secure.php
 
+
+// Checking Requirements
+
+$PRECHECK['WB_VERSION'] = array('VERSION' => '2.8', 'OPERATOR' => '>=');
+$PRECHECK['PHP_VERSION'] = array('VERSION' => '5.2.0', 'OPERATOR' => '>=');
+$PRECHECK['WB_ADDONS'] = array(
+	'rhtools' => array('VERSION' => '0.51', 'OPERATOR' => '>='),
+);
+
+global $database;
+$sql = "SELECT * FROM ".TABLE_PREFIX."settings WHERE name='default_charset'";
+$result = $database->query($sql);
+if ($result) {
+	$data = $result->fetchRow();
+	($data['value'] == 'utf-8') ? $status = true : $status = false;
+	$PRECHECK['CUSTOM_CHECKS'] = array(
+    'Default Charset' => array('REQUIRED' => 'utf-8', 'ACTUAL' => $data['value'], 'STATUS' => $status));
+}
+
 ?>

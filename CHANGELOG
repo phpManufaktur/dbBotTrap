@@ -1,0 +1,15 @@
+### dbBotTrap
+
+0.11 - 2012-05-25
+
+* moved repository to GitHub
+* update for page.reestrictor.php
+* added CHANGELOG
+* added LICENSE
+* added README.md
+* added precheck.php
+* update of header informations for all files
+
+0.10 - 2010-02-23
+
+* first beta release

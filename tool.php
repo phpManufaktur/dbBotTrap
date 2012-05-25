@@ -1,27 +1,31 @@
 <?php
 
 /**
-  Module developed for the Open Source Content Management System Website Baker (http://websitebaker.org)
-  Copyright (c) 2010, Ralf Hertsch
-  Contact me: hertsch(at)berlin.de, http://phpManufaktur.de
+ * dbBotTrap
+ *
+ * @author Ralf Hertsch <ralf.hertsch@phpmanufaktur.de>
+ * @link https://addons.phpmanufaktur.de/de/addons/dbconnect.php
+ * @copyright 2009-2012 phpManufaktur by Ralf Hertsch
+ * @license http://www.gnu.org/licenses/gpl.html GNU Public License (GPL)
+ */
 
-  This module is free software. You can redistribute it and/or modify it
-  under the terms of the GNU General Public License  - version 2 or later,
-  as published by the Free Software Foundation: http://www.gnu.org/licenses/gpl.html.
-
-  This module is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-  
-  $Id$
-  
-**/
-
-// prevent this file from being accesses directly
-if(defined('WB_PATH') == false) {
-  exit("Cannot access this file directly");
+// try to include LEPTON class.secure.php to protect this file and the whole CMS!
+if (defined('WB_PATH')) {
+	if (defined('LEPTON_VERSION')) include(WB_PATH.'/framework/class.secure.php');
+} elseif (file_exists($_SERVER['DOCUMENT_ROOT'].'/framework/class.secure.php')) {
+	include($_SERVER['DOCUMENT_ROOT'].'/framework/class.secure.php');
+} else {
+	$subs = explode('/', dirname($_SERVER['SCRIPT_NAME']));	$dir = $_SERVER['DOCUMENT_ROOT'];
+	$inc = false;
+	foreach ($subs as $sub) {
+		if (empty($sub)) continue; $dir .= '/'.$sub;
+		if (file_exists($dir.'/framework/class.secure.php')) {
+			include($dir.'/framework/class.secure.php'); $inc = true;	break;
+		}
+	}
+	if (!$inc) trigger_error(sprintf("[ <b>%s</b> ] Can't include LEPTON class.secure.php!", $_SERVER['SCRIPT_NAME']), E_USER_ERROR);
 }
+// end include LEPTON class.secure.php
 
 require_once(WB_PATH.'/modules/'.basename(dirname(__FILE__)).'/initialize.php');
 
@@ -39,35 +43,35 @@ $tool = new botTrapTool();
 $tool->action();
 
 class botTrapTool {
-	
+
 	const request_action 						= 'act';
-	
+
 	const action_default            = 'def';
 	const action_start							= 'start';
 	const action_help								= 'help';
-  
+
 	private $tab_navigation_array = array(
 		self::action_start						=> bt_tab_start,
 		self::action_help							=> bt_tab_help
 	);
-	
+
 	private $page_link 					= '';
 	private $img_url						= '';
 	private $template_path			= '';
 	private $error							= '';
 	private $message						= '';
-	
+
 	private $swNavHide					= array();
-	
+
 	public function __construct() {
 		$this->page_link = ADMIN_URL.'/admintools/tool.php?tool=dbbottrap';
 		$this->template_path = WB_PATH . '/modules/' . basename(dirname(__FILE__)) . '/htt/' ;
 		$this->img_url = WB_URL.'/modules/'.basename(dirname(__FILE__)).'/img/';
 	} // __construct()
-	
+
 	/**
     * Set $this->error to $error
-    * 
+    *
     * @param STR $error
     */
   public function setError($error) {
@@ -76,7 +80,7 @@ class botTrapTool {
 
   /**
     * Get Error from $this->error;
-    * 
+    *
     * @return STR $this->error
     */
   public function getError() {
@@ -85,7 +89,7 @@ class botTrapTool {
 
   /**
     * Check if $this->error is empty
-    * 
+    *
     * @return BOOL
     */
   public function isError() {
@@ -100,7 +104,7 @@ class botTrapTool {
   }
 
   /** Set $this->message to $message
-    * 
+    *
     * @param STR $message
     */
   public function setMessage($message) {
@@ -109,7 +113,7 @@ class botTrapTool {
 
   /**
     * Get Message from $this->message;
-    * 
+    *
     * @return STR $this->message
     */
   public function getMessage() {
@@ -118,13 +122,13 @@ class botTrapTool {
 
   /**
     * Check if $this->message is empty
-    * 
+    *
     * @return BOOL
     */
   public function isMessage() {
     return (bool) !empty($this->message);
   } // isMessage
-  
+
   /**
    * Return Version of Module
    *
@@ -134,7 +138,7 @@ class botTrapTool {
     // read info.php into array
     $info_text = file(WB_PATH.'/modules/'.basename(dirname(__FILE__)).'/info.php');
     if ($info_text == false) {
-      return -1; 
+      return -1;
     }
     // walk through array
     foreach ($info_text as $item) {
@@ -143,14 +147,14 @@ class botTrapTool {
         $value = explode('=', $item);
         // return floatval
         return floatval(preg_replace('([\'";,\(\)[:space:][:alpha:]])', '', $value[1]));
-      } 
+      }
     }
     return -1;
   } // getVersion()
-	
+
 	/**
    * Verhindert XSS Cross Site Scripting
-   * 
+   *
    * @param REFERENCE $_REQUEST Array
    * @return $request
    */
@@ -163,13 +167,13 @@ class botTrapTool {
   	}
 	  return $request;
   } // xssPrevent()
-	
+
   public function action() {
   	// prevent Cross Site Scripting
   	foreach ($_REQUEST as $key => $value) {
   		$_REQUEST[$key] = $this->xssPrevent($value);
   	}
-  	
+
     isset($_REQUEST[self::request_action]) ? $action = $_REQUEST[self::request_action] : $action = self::action_default;
   	switch ($action):
   	case self::action_help:
@@ -180,11 +184,11 @@ class botTrapTool {
   		break;
   	endswitch;
   } // action
-	
-  	
+
+
   /**
    * Erstellt eine Navigationsleiste
-   * 
+   *
    * @param $action - aktives Navigationselement
    * @return STR Navigationsleiste
    */
@@ -192,8 +196,8 @@ class botTrapTool {
   	$result = '';
   	foreach ($this->tab_navigation_array as $key => $value) {
   		if (!in_array($key, $this->swNavHide)) {
-	  		($key == $action) ? $selected = ' class="selected"' : $selected = ''; 
-	  		$result .= sprintf(	'<li%s><a href="%s">%s</a></li>', 
+	  		($key == $action) ? $selected = ' class="selected"' : $selected = '';
+	  		$result .= sprintf(	'<li%s><a href="%s">%s</a></li>',
 	  												$selected,
 	  												sprintf('%s&%s=%s', $this->page_link, self::request_action, $key),
 	  												$value
@@ -203,13 +207,13 @@ class botTrapTool {
   	$result = sprintf('<ul class="nav_tab">%s</ul>', $result);
   	return $result;
   } // getNavigation()
-   
+
   /**
    * Ausgabe des formatierten Ergebnis mit Navigationsleiste
-   * 
+   *
    * @param $action - aktives Navigationselement
    * @param $content - Inhalt
-   * 
+   *
    * @return ECHO RESULT
    */
   public function show($action, $content) {
@@ -227,7 +231,7 @@ class botTrapTool {
   	$parser->parseTemplateFile($this->template_path.'backend.body.htt');
   	$parser->echoHTML();
   } // show()
-	
+
 	public function dlgStart() {
 		global $ver;
 		global $sig;
@@ -269,7 +273,7 @@ class botTrapTool {
 																bt_label_captcha_state,
 																$entry_array[7]);
 					} // foreach
-					
+
 				}
 				else {
 					// LOG File definiert aber nicht gefunden...
@@ -288,7 +292,7 @@ class botTrapTool {
 		}
 		return $result;
 	} // dlgStart()
-	
+
 	public function dlgHelp() {
 		$help_file = WB_PATH.'/modules/'.basename(dirname(__FILE__)).'/languages/' .LANGUAGE .'_help.html';
 		if (file_exists($help_file)) {
@@ -296,6 +300,6 @@ class botTrapTool {
 		}
 		return sprintf(bt_error_missing_help, basename($help_file));
 	} // dlgHelp()
-  
+
 } // botTrapTool
 ?>
