@@ -1,0 +1,5 @@
+<!-- $Id: backend.body.htt 3 2009-12-15 17:28:46Z ralf $ -->
+<div class="gp_backend">
+  {navigation}
+  <div{class}>{content}</div>
+</div>
