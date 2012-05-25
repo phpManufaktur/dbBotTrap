@@ -37,7 +37,7 @@ dbBotTrap will prompt you the status of the Bot-Trap function. The list will be 
 
 You may test the installation with the [Bot-Trap Test Site] [6].
 
-Please visit the Website of the Bot-Trap Project [3] to get further informations.
+Please visit the Website of the [Bot-Trap Project] [3] to get further informations.
 
 [1]: http://websitebaker2.org
 [2]: http://lepton-cms.org
