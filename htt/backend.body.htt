@@ -1,4 +1,4 @@
-<div class="gp_backend">
+<div class="gp_backend"> 
   {navigation}
   <div{class}>{content}</div>
 </div>
