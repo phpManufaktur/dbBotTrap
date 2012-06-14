@@ -30,7 +30,6 @@ if (defined('WB_PATH')) {
 
 // Checking Requirements
 
-$PRECHECK['WB_VERSION'] = array('VERSION' => '2.8', 'OPERATOR' => '>=');
 $PRECHECK['PHP_VERSION'] = array('VERSION' => '5.2.0', 'OPERATOR' => '>=');
 $PRECHECK['WB_ADDONS'] = array(
 	'rhtools' => array('VERSION' => '0.51', 'OPERATOR' => '>='),
